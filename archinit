@@ -2,20 +2,25 @@
 
 # Device to install on, fill in manually, then remove exit 1
 installDevice=
-exit 1
-
-
 # Partition sizes
 efiPartitionSize=512
 swapPartitionSize=4096
+# System config
+timeZone="America/Toronto"
+localeGen="en_US.UTF-8 UTF-8"
+localeConf="LANG=en_US.UTF-8"
+hostName="archlinux"
+
+# Remove this after you've set everything up how you want it
+exit 1
 
 read -p "Proceed with installation? This will wipe the device $installDevice (yn) : " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
+		#
+		# System setup
+		#
 
-		# Script the steps from the install wiki
-		timedatectl set-ntp true
-		
 		# Wipe the device
 		dd bs=512 count=1 if=/dev/zero of=$installDevice
 		
@@ -40,5 +45,21 @@ then
 		mount $rootPartition /mnt
 		mkdir -p /mnt/efi
 		mount $efiPartition /mnt/efi
+		
+		#
+		# Follow the steps from the arch wiki
+		#
 
+		timedatectl set-ntp true
+		pacstrap /mnt base base base-devel
+		genfstab -U /mnt >> /mnt/etc/fstab
+		arch-chroot /mnt
+		ln -sf /usr/share/zoneinfo/$timeZone /etc/localtime
+		hwclock --systohc
+		echo $localeGen > /etc/locale.gen
+		echo $localeConf > /etc/locale.conf
+		echo $hostName > /etc/hostname	
+		printf "127.0.0.1 localhost\n::1 localhost\n127.0.1.1 $hostName.localdomain $hostName" > /etc/hosts
+		# Ask user for the root password
+		passwd
 fi
