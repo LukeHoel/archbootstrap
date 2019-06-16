@@ -2,9 +2,6 @@
 
 # Device to install on, fill in manually, then remove exit 1
 installDevice=
-# Partition sizes
-bootPartitionSize=512
-swapPartitionSize=4096
 # System config
 timeZone="America/Toronto"
 localeGen="en_US.UTF-8 UTF-8"
@@ -26,25 +23,16 @@ then
 		
 		echo "	select $installDevice
 				mklabel gpt
-				mkpart primary 0% $bootPartitionSize
-				set 1 bios_grub on
-				mkpart primary $bootPartitionSize $swapPartitionSize
-				mkpart primary $(($bootPartitionSize + $swapPartitionSize)) 100%" | parted
+				mkpart primary 0% 100%
+				set 1 bios_grub on" | parted
 
-		bootPartition="${installDevice}1"
-		swapPartition="${installDevice}2"
-		rootPartition="${installDevice}3"
+		rootPartition="${installDevice}1"
 
 		# Init partitions
-		yes | mkfs.fat $bootPartition
 		yes | mkfs.ext4 $rootPartition
-		mkswap $swapPartition
-		swapon $swapPartition
 
 		# Mount partitions
 		mount $rootPartition /mnt
-		mkdir -p /mnt/boot
-		mount $bootPartition /mnt/boot
 		
 		#
 		# Follow the steps from the arch wiki
