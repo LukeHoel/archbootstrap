@@ -28,6 +28,7 @@ then
 				mklabel gpt
 				mkpart primary 0% $efiPartitionSize
 				set 1 esp on
+				set 1 bios_grub on
 				mkpart primary $efiPartitionSize $swapPartitionSize
 				mkpart primary $(($efiPartitionSize + $swapPartitionSize)) 100%" | parted
 
@@ -51,7 +52,7 @@ then
 		#
 
 		timedatectl set-ntp true
-		pacstrap /mnt base base base-devel
+		pacstrap /mnt base base base-devel grub
 		genfstab -U /mnt >> /mnt/etc/fstab
 		arch-chroot /mnt
 		ln -sf /usr/share/zoneinfo/$timeZone /etc/localtime
@@ -62,4 +63,7 @@ then
 		printf "127.0.0.1 localhost\n::1 localhost\n127.0.1.1 $hostName.localdomain $hostName" > /etc/hosts
 		# Ask user for the root password
 		passwd
-fi
+		# Finish setup by installing grub
+		grub-install --target=i386-pc $installDevice
+		grub-mkconfig -o /boot/grub/grub.cfg
+fi 
