@@ -54,16 +54,14 @@ then
 		timedatectl set-ntp true
 		pacstrap /mnt base base base-devel grub
 		genfstab -U /mnt >> /mnt/etc/fstab
-		arch-chroot /mnt
-		ln -sf /usr/share/zoneinfo/$timeZone /etc/localtime
+		ln -sf /mnt/usr/share/zoneinfo/$timeZone /mnt/etc/localtime
 		hwclock --systohc
-		echo $localeGen > /etc/locale.gen
-		echo $localeConf > /etc/locale.conf
-		echo $hostName > /etc/hostname	
-		printf "127.0.0.1 localhost\n::1 localhost\n127.0.1.1 $hostName.localdomain $hostName" > /etc/hosts
-		# Ask user for the root password
-		passwd
-		# Finish setup by installing grub
+		echo $localeGen > /mnt/etc/locale.gen
+		echo $localeConf > /mnt/etc/locale.conf
+		echo $hostName > /mnt/etc/hostname	
+		printf "127.0.0.1 localhost\n::1 localhost\n127.0.1.1 $hostName.localdomain $hostName" > /mnt/etc/hosts
+		# Switch into mnt and finalize setup
+		arch-chroot /mnt /bin/bash -c "passwd
 		grub-install --target=i386-pc $installDevice
-		grub-mkconfig -o /boot/grub/grub.cfg
+		grub-mkconfig -o /boot/grub/grub.cfg"
 fi 
