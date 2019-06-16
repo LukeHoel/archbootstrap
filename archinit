@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# Device to install on, fill in manually
+installDevice=
+
+# Partition sizes
+efiPartitionSize=512
+swapPartitionSize=4096
+
+read -p "Proceed with installation? This will wipe the device $installDevice" -n 1 -r
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+
+		# Script the steps from the install wiki
+		timedatectl set-ntp true
+		
+		# Wipe the device
+		dd bs=512 count=1 if=/dev/zero of=$installDevice
+		
+		echo "	mklabel gpt
+				mkpart primary 0% $efiPartitionSize
+				mkpart primary $efiPartitionSize $swapPartitionSize
+				mkpart primary $(($efiPartitionSize + $swapPartitionSize)) 100%" | parted	
+
+		efiPartition="${installDevice}1"
+		swapPartition="${installDevice}2"
+		rootPartition="${installDevice}3"
+
+		# Init partitions
+		mkfs.ext4 $rootPartition
+		mkswap $swapPartition
+
+		# Mount partitions
+		mount $rootPartition /mnt
+		mount $efiPartition /mnt/efi
+
+fi
