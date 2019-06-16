@@ -1,7 +1,9 @@
 #!/bin/sh
 
-# Device to install on, fill in manually
+# Device to install on, fill in manually, then remove exit 1
 installDevice=
+exit 1
+
 
 # Partition sizes
 efiPartitionSize=512
