@@ -56,8 +56,7 @@ then
 		genfstab -U /mnt >> /mnt/etc/fstab
 			
 		# Run remaining commands under chroot
-		arch-chroot /mnt /bin/bash -c
-		"ln -sf /usr/share/zoneinfo/$timeZone /etc/localtime;
+		arch-chroot /mnt /bin/bash -c "ln -sf /usr/share/zoneinfo/$timeZone /etc/localtime;
 		hwclock --systohc;
 		echo $localeGen > /etc/locale.gen;
 		echo $localeConf > /etc/locale.conf;
