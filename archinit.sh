@@ -14,7 +14,7 @@ hostName="archlinux"
 # Remove this after you've set everything up how you want it
 exit 1
 
-read -p "Proceed with installation? This will wipe the device $installDevice (yn) : " -n 1 -r
+read -p "Proceed with installation? This will wipe the device $installDevice (yn) : " REPLY
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
 		#
