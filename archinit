@@ -15,12 +15,12 @@ then
 
 		# Script the steps from the install wiki
 		timedatectl set-ntp true
-		umount /mnt
 		
 		# Wipe the device
 		dd bs=512 count=1 if=/dev/zero of=$installDevice
 		
-		echo "	mklabel gpt
+		echo "	select $installDevice
+				mklabel gpt
 				mkpart primary 0% $efiPartitionSize
 				mkpart primary $efiPartitionSize $swapPartitionSize
 				mkpart primary $(($efiPartitionSize + $swapPartitionSize)) 100%" | parted -s
@@ -28,7 +28,7 @@ then
 		efiPartition="${installDevice}1"
 		swapPartition="${installDevice}2"
 		rootPartition="${installDevice}3"
-	
+
 		# Init partitions
 		yes | mkfs.ext4 $rootPartition
 		mkswap $swapPartition
@@ -36,7 +36,6 @@ then
 
 		# Mount partitions
 		mount $rootPartition /mnt
-		mkdir -p mnt/efi
 		mount $efiPartition /mnt/efi
 
 fi
