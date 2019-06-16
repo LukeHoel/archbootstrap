@@ -7,7 +7,7 @@ installDevice=
 efiPartitionSize=512
 swapPartitionSize=4096
 
-read -p "Proceed with installation? This will wipe the device $installDevice" -n 1 -r
+read -p "Proceed with installation? This will wipe the device $installDevice (yn) : " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
 
@@ -20,17 +20,19 @@ then
 		echo "	mklabel gpt
 				mkpart primary 0% $efiPartitionSize
 				mkpart primary $efiPartitionSize $swapPartitionSize
-				mkpart primary $(($efiPartitionSize + $swapPartitionSize)) 100%" | parted	
+				mkpart primary $(($efiPartitionSize + $swapPartitionSize)) 100%" | parted -s
 
 		efiPartition="${installDevice}1"
 		swapPartition="${installDevice}2"
 		rootPartition="${installDevice}3"
 
 		# Init partitions
-		mkfs.ext4 $rootPartition
+		yes | mkfs.ext4 $rootPartition
 		mkswap $swapPartition
+		swapon $swapPartition
 
 		# Mount partitions
+		mkdir -p mnt/efi
 		mount $rootPartition /mnt
 		mount $efiPartition /mnt/efi
 
