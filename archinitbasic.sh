@@ -49,7 +49,6 @@ then
 		echo $localeConf > /etc/locale.conf;
 		echo $hostName > /etc/hostname;	
 		printf \"127.0.0.1 localhost\n::1 localhost\n127.0.1.1 $hostName.localdomain $hostName\" > /etc/hosts;
-		passwd;
 		grub-install --target=i386-pc $installDevice;
 		grub-mkconfig -o /boot/grub/grub.cfg;"
 fi 
