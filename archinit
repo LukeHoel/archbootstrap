@@ -23,7 +23,7 @@ then
 				mklabel gpt
 				mkpart primary 0% $efiPartitionSize
 				mkpart primary $efiPartitionSize $swapPartitionSize
-				mkpart primary $(($efiPartitionSize + $swapPartitionSize)) 100%" | parted -s
+				mkpart primary $(($efiPartitionSize + $swapPartitionSize)) 100%" | parted
 
 		efiPartition="${installDevice}1"
 		swapPartition="${installDevice}2"
@@ -36,6 +36,7 @@ then
 
 		# Mount partitions
 		mount $rootPartition /mnt
+		mkdir -p /mnt/efi
 		mount $efiPartition /mnt/efi
 
 fi
