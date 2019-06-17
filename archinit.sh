@@ -7,6 +7,7 @@ timeZone="America/Toronto"
 localeGen="en_US.UTF-8 UTF-8"
 localeConf="LANG=en_US.UTF-8"
 hostName="archlinux"
+extraPackages="base-devel vim"
 
 # Remove this after you've set everything up how you want it
 exit 1
@@ -43,7 +44,7 @@ then
 		#
 
 		timedatectl set-ntp true
-		pacstrap /mnt base base base-devel grub
+		pacstrap /mnt base grub $extraPackages
 		genfstab -U /mnt >> /mnt/etc/fstab
 			
 		# Run remaining commands under chroot
