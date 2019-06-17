@@ -23,16 +23,20 @@ then
 		
 		echo "	select $installDevice
 				mklabel gpt
-				mkpart primary 0% 100%
+				mkpart primary 0% 512
+				mkpart primary 512 100%
 				set 1 bios_grub on" | parted
 
-		rootPartition="${installDevice}1"
+		bootPartition="${installDevice}1"
+		rootPartition="${installDevice}2"
 
 		# Init partitions
+		yes | mkfs.fat $bootPartition
 		yes | mkfs.ext4 $rootPartition
 
 		# Mount partitions
 		mount $rootPartition /mnt
+		mount $bootPartition /mnt/boot
 		
 		#
 		# Follow the steps from the arch wiki
