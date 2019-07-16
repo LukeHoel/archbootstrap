@@ -7,7 +7,7 @@ timeZone="America/Toronto"
 localeGen="en_US.UTF-8 UTF-8"
 localeConf="LANG=en_US.UTF-8"
 hostName="archlinux"
-extraPackages="base-devel vim git"
+extraPackages="base-devel git vim"
 
 # Remove this after you've set everything up how you want it
 exit 1
